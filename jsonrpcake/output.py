@@ -47,14 +47,9 @@ class BinarySuppressedError(Exception):
 
 def write(stream, outfile, flush):
     """Write the output stream."""
-    try:
-        # Writing bytes so we use the buffer interface (Python 3).
-        buf = outfile.buffer
-    except AttributeError:
-        buf = outfile
 
     for chunk in stream:
-        buf.write(chunk)
+        outfile.write(chunk)
         if flush:
             outfile.flush()
 
@@ -78,7 +73,7 @@ def write_with_colors_win_py3(stream, outfile, flush):
 
 def build_output_stream(args, env, request, response):
     """Build and return a chain of iterators over the `request`-`response`
-    exchange each of which yields `bytes` chunks.
+    exchange each of which yields chunks.
 
     """
 
@@ -101,7 +96,7 @@ def build_output_stream(args, env, request, response):
     if env.stdout_isatty and resp:
         # Ensure a blank line after the response body.
         # For terminal output only.
-        output.append([b'\n\n'])
+        output.append(['\n\n'])
 
     return chain(*output)
 
